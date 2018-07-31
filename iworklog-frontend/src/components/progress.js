@@ -1,9 +1,14 @@
 import React from 'react'
+import {formatTime} from '../utils.js'
 
 export const ProgressBar = (props) => {
-    const progress = props.progress > 100 ? 100 : props.progress
-    console.log(progress);
-    
+    const {
+        logged,
+        estimated,
+    } = props
+    let progress =  Math.round(logged * 100 / estimated)
+    progress = progress > 100 ? 100 : progress
+
     return (
         <div 
             style={{
@@ -19,10 +24,10 @@ export const ProgressBar = (props) => {
                 }}
             >
                 <span>
-                    2h
+                    {formatTime(logged)}
                 </span>
                 <span>
-                    15h
+                    {formatTime(estimated)}
                 </span>
             </div>
             <div
