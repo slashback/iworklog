@@ -1,6 +1,8 @@
+import json
 import requests
-from requests.auth import HTTPBasicAuth
+from bottle import route, run, response
 from os import environ
+from requests.auth import HTTPBasicAuth
 
 
 jira_user = environ.get('JIRA_USER')
@@ -19,15 +21,36 @@ def get_issues():
         get_issues_url,
         auth=HTTPBasicAuth(jira_user, jira_token),
     ).json()
+    result = []
     for issue in response['issues']:
-        uid = issue['key']
-        issue_type = issue['fields']['issuetype']['name']
-        title = issue['fields']['summary']
-        status = issue['fields']['status']['name']
-        estimate = issue['fields']['aggregatetimeoriginalestimate']
-        logged = issue['fields']['timespent']
-        print((uid, title, issue_type, status, estimate, logged))
+        resp_item = dict(
+            uid=issue['key'],
+            issue_type=issue['fields']['issuetype']['name'],
+            title=issue['fields']['summary'],
+            status=issue['fields']['status']['name'],
+            estimate=issue['fields']['aggregatetimeoriginalestimate'] or 0,
+            logged=issue['fields']['timespent'] or 0,
+        )
+        result.append(resp_item)
+        print(resp_item)
+    return result
 
 
-if __name__ == '__main__':
-    get_issues()
+@route('/issues')
+def get_current_sprint_issues():
+    issues = []
+    error = None
+    try:
+        issues = get_issues()
+    except Exception as ex:
+        error = str(ex)
+    resp = {
+        'issues': issues,
+        'error': error,
+    }
+    response.content_type = 'application/json'
+    return json.dumps(resp)
+
+
+if __name__ == '__main__':   
+    run(host='localhost', port=8080)
