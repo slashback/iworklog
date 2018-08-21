@@ -1,4 +1,5 @@
 import json
+from dataclasses import asdict, dataclass
 from typing import Any, Dict, List
 from aiohttp import web, BasicAuth, ClientSession
 from os import environ
@@ -6,6 +7,17 @@ from os import environ
 
 jira_user = environ.get('JIRA_USER')
 jira_token = environ.get('JIRA_TOKEN')
+
+
+@dataclass
+class Issue:
+    uid: int
+    issue_type: str
+    title: str
+    status: str
+    estimate: int
+    logged: int
+
 
 async def fetch_issues_from_jira(
         client: ClientSession
@@ -27,14 +39,14 @@ async def fetch_issues_from_jira(
         jira_resp = await resp.json()
         return jira_resp['issues']
 
-async def get_issues() -> List[Dict[str, Any]]:
-    raw_issues = []
+async def get_issues() -> List[Issue]:
+    raw_issues: List[Dict[str, Any]] = []
     async with ClientSession() as client:
         raw_issues = await fetch_issues_from_jira(client)
     
     result = []
     for issue in raw_issues:
-        resp_item = dict(
+        resp_item = Issue(
             uid=issue['key'],
             issue_type=issue['fields']['issuetype']['name'],
             title=issue['fields']['summary'],
@@ -43,19 +55,18 @@ async def get_issues() -> List[Dict[str, Any]]:
             logged=issue['fields']['timespent'] or 0,
         )
         result.append(resp_item)
-        print(resp_item)
     return result
 
 
 async def get_current_sprint_issues(request: web.Request) -> web.Response:
-    issues = []
+    issues: List[Issue] = []
     error = None
     try:
         issues = await get_issues()
     except Exception as ex:
         error = str(ex)
     resp = {
-        'issues': issues,
+        'issues': [asdict(issue) for issue in issues],
         'error': error,
     }
     return web.json_response(resp)
