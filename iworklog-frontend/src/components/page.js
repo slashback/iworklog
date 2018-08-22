@@ -1,28 +1,8 @@
 import React from 'react'
 import WorklogList from './worklog_list.js'
 
-export const WorklogPage = () => {
-    const issues = [
-        {
-            id: "CD-20626",
-            title: "Логирование времени",
-            estimated: 3600,
-            logged: 2400,
-            persistent: true,
-        },
-        {
-            id: "CD-31509",
-            title: "[newbuilding-search] презентер для выдачи ЖК",
-            estimated: 14400,
-            logged: 25213,
-        },
-        {
-            id: "CD-32439",
-            title: "[newbuilding-search] Поддержать новые фильтры",
-            estimated: 18000,
-            logged: 12600,
-        },
-    ]
+
+export const WorklogPage = (props) => {
     return (
         <div 
             style={{
@@ -31,9 +11,31 @@ export const WorklogPage = () => {
                 color: "#0064a8",
                 borderBottom: "1px solid #0064a8",
             }}
-        >
+        >   
+            <div
+                style={{
+                    display: props.loading ? 'flex' : 'none',
+                    position: "absolute",
+                    top: "0",
+                    bottom: "0",
+                    width: "100%",
+                    zIndex: '1',
+                    paddingTop: '50px',
+                    justifyContent: 'center',
+                    fontSize: '300%',
+                    font: '50px',
+                    backgroundColor: "rgba(255,255,255, 0.8)"
+                }}
+            >
+                <span>LOADING</span>
+            </div>
             <WorklogList
-                issues={issues}
+                issues={props.issues}
+                currentActivity={props.currentActivity}
+                currentOpened={props.currentOpened}
+                onChangeCurrentOpened={props.onChangeCurrentOpened}
+                onChangeCurrentActivity={props.onChangeCurrentActivity}
+                onWorkLog={props.onWorkLog}
             />
         </div>
     )

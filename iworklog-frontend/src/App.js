@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import WorkLogPage from './components/page.js'
-import './App.css';
+import React, { Component } from 'react'
+import PageContainer from './components/page_container.js'
+
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <WorkLogPage />
+        <PageContainer />
       </div>
     );
   }

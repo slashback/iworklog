@@ -1,9 +1,10 @@
 import React from 'react'
 
-export const TimePicker = () => {
-    // const {
-    //     logged
-    // } = props
+export const TimePicker = (props) => {
+    const {
+        issueId,
+        onWorkLog,
+    } = props
     const intervals = [
         {
             title: '15m',
@@ -20,21 +21,31 @@ export const TimePicker = () => {
         },
     ]
     const itemStyle = {
-
+        color: 'white',
+        margin: "10px 10px",
+        padding: '5px',
+        backgroundColor: "rgba(0,0,0,0.3)",
+        width: '40px',
+        borderRadius: "9px",
+        boxShadow: "0px 0px 2px 2px rgba(50, 50, 50, 0.3)",
     }
     return (
         <div 
             style={{
-            
+                marginTop: "12px",
+                display: 'flex',
+                justifyContent: "space-around",
             }}
         > 
             {intervals.map((item) => {
 
-                return (<span
+                return (<div
                     style={itemStyle}
+                    key={item.title}
+                    onClick={() => onWorkLog(issueId, item.seconds)}
                 >
                     {item.title}                
-                </span>)
+                </div>)
             }) }
         </div>
     )
