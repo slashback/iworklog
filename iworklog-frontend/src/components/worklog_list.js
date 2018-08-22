@@ -16,7 +16,19 @@ export const WorklogList = (props) => {
     const listItems = issues.map((item, idx) => {
         const colorIdx = idx % colors.length
         const color = colors[colorIdx]
-        return <WorklogListItem issue={item} key={item.id} color={color} />
+        const opened = props.currentOpened == item.id ? true : false
+        return (
+            <WorklogListItem 
+                issue={item} 
+                key={item.id} 
+                color={color}  
+                currentActivity={props.currentActivity}
+                opened={opened}
+                onChangeCurrentOpened={props.onChangeCurrentOpened}
+                onChangeCurrentActivity={props.onChangeCurrentActivity}
+                onWorkLog={props.onWorkLog}
+            />
+        )
     }
         
     )

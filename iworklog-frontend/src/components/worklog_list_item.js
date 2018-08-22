@@ -1,17 +1,18 @@
 import React from 'react'
 import ProgressBar from './progress.js'
 import TimePicker from './time_picker.js'
+import ActivityPicker from './activity_picker.js'
 
 export const WorklogListItem = (props) => {
     const {
         issue,
         color,
+        opened,
+        currentActivity,
+        onChangeCurrentOpened,
+        onChangeCurrentActivity,
+        onWorkLog,
     } = props
-    console.log(issue.id);
-    let opened = false
-    if (issue.id === 'CD-31509') {
-        opened = true
-    }
     const shadowStyle = opened ? "" : "inset 0 -5px 10px -5px rgba(0,0,0,0.9)"
     
     const showProgress = issue.persistent === true ? false : true
@@ -34,6 +35,7 @@ export const WorklogListItem = (props) => {
                     textAlign: "left",
                     position: "relative",
                 }}
+                onClick={() => onChangeCurrentOpened(issue.id)}
             >
                 <span
                     style={{
@@ -51,14 +53,21 @@ export const WorklogListItem = (props) => {
             </div>
             <div
                 style={{
-                    height: "80px",
+                    height: "120px",
                     display: opened ? "block" : "none",
                     backgroundColor: color,
                     boxShadow: "inset 0 -5px 10px -5px rgba(0,0,0,0.9)",
                     
                 }}
             >
-
+                <ActivityPicker 
+                    currentActivity={currentActivity} 
+                    onChangeCurrentActivity={onChangeCurrentActivity}
+                />
+                <TimePicker
+                    issueId={issue.id}
+                    onWorkLog={onWorkLog}
+                />
             </div>
         </div>
     )
