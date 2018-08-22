@@ -7,6 +7,8 @@ from os import environ
 
 jira_user = environ.get('JIRA_USER')
 jira_token = environ.get('JIRA_TOKEN')
+# jira_user = 'm.mazaev'
+jira_username = 'alexey.sozykin'
 
 
 @dataclass
@@ -15,7 +17,7 @@ class Issue:
     issue_type: str
     title: str
     status: str
-    estimate: int
+    estimated: int
     logged: int
 
 
@@ -27,14 +29,13 @@ async def fetch_issues_from_jira(
             'Please set correct credentials (JIRA_USER, JIRA_TOKEN)'
         )
     get_issues_url = (
-        'https://cianru.atlassian.net/rest/api/2/search?jql='
-        'sprint%20in%20openSprints%20()%20%26%20assignee%20%3D%20m.mazaev'
+        f'https://cianru.atlassian.net/rest/api/2/search?jql='
+        f'sprint%20in%20openSprints%20()%20%26%20assignee%20%3D%20{jira_username}'
     )
     async with client.get(
         get_issues_url,
         auth=BasicAuth(jira_user, jira_token)
     ) as resp:
-        r = await resp.text()
         assert resp.status == 200
         jira_resp = await resp.json()
         return jira_resp['issues']
@@ -51,7 +52,7 @@ async def get_issues() -> List[Issue]:
             issue_type=issue['fields']['issuetype']['name'],
             title=issue['fields']['summary'],
             status=issue['fields']['status']['name'],
-            estimate=issue['fields']['aggregatetimeoriginalestimate'] or 0,
+            estimated=issue['fields']['aggregatetimeoriginalestimate'] or 0,
             logged=issue['fields']['timespent'] or 0,
         )
         result.append(resp_item)
@@ -75,6 +76,6 @@ async def get_current_sprint_issues(request: web.Request) -> web.Response:
 if __name__ == '__main__':   
     app = web.Application()
     app.add_routes([
-        web.get('/issues', get_current_sprint_issues)
+        web.get('/api/issues', get_current_sprint_issues)
     ])
     web.run_app(app)
