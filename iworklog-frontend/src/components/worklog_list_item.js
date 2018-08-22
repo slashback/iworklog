@@ -35,7 +35,7 @@ export const WorklogListItem = (props) => {
                     textAlign: "left",
                     position: "relative",
                 }}
-                onClick={() => onChangeCurrentOpened(issue.id)}
+                onClick={() => onChangeCurrentOpened(issue.uid)}
             >
                 <span
                     style={{
@@ -44,7 +44,7 @@ export const WorklogListItem = (props) => {
                         fontSize: "large"
                     }}
                 >
-                    {issue.id}
+                    {issue.uid}
                 </span>
                 <span>
                     {issue.title}
@@ -65,7 +65,7 @@ export const WorklogListItem = (props) => {
                     onChangeCurrentActivity={onChangeCurrentActivity}
                 />
                 <TimePicker
-                    issueId={issue.id}
+                    issueId={issue.uid}
                     onWorkLog={onWorkLog}
                 />
             </div>

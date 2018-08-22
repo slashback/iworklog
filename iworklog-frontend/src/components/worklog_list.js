@@ -16,11 +16,11 @@ export const WorklogList = (props) => {
     const listItems = issues.map((item, idx) => {
         const colorIdx = idx % colors.length
         const color = colors[colorIdx]
-        const opened = props.currentOpened == item.id ? true : false
+        const opened = props.currentOpened === item.uid ? true : false
         return (
             <WorklogListItem 
                 issue={item} 
-                key={item.id} 
+                key={item.uid} 
                 color={color}  
                 currentActivity={props.currentActivity}
                 opened={opened}

@@ -1,27 +1,6 @@
 import React, { Component } from 'react';
 import WorkLogPage from './page.js'
 
-const issues = [
-    {
-        id: "CD-20626",
-        title: "Логирование времени",
-        estimated: 3600,
-        logged: 2400,
-        persistent: true,
-    },
-    {
-        id: "CD-31509",
-        title: "[newbuilding-search] презентер для выдачи ЖК",
-        estimated: 14400,
-        logged: 25213,
-    },
-    {
-        id: "CD-32439",
-        title: "[newbuilding-search] Поддержать новые фильтры",
-        estimated: 18000,
-        logged: 12600,
-    },
-]
 
 class PageContainer extends Component {
     constructor(props) {
@@ -40,8 +19,29 @@ class PageContainer extends Component {
 
     onChangeLoadingState() {
         this.setState({
-            loading: !!this.state.loading,
+            loading: !this.state.loading,
         })
+    }
+
+    getIssues() {
+        this.onChangeLoadingState()
+        fetch("/api/issues")
+        .then(res => res.json())
+        .then(
+            (result) => {
+                this.setState({
+                    issues: result.issues,
+                })
+                this.onChangeLoadingState()
+            },
+            (error) => {
+                this.setState({
+                    isLoaded: true,
+                    error
+                })
+                this.onChangeLoadingState()
+            }
+        )
     }
 
     onWorkLog(issueId, time) {
@@ -69,9 +69,7 @@ class PageContainer extends Component {
     }
 
     componentDidMount() {
-        this.setState({
-            issues: issues,
-        })
+        this.getIssues()
     }
     
     render() {
