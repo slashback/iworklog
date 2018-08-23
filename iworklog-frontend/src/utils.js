@@ -10,3 +10,8 @@ export const formatTime = (timeInSeconds) => {
 
     return `${hoursStr}${minutesStr}`
 }
+
+export const getUserNameFromUrl = () => {
+    const url = new URL(window.location.href);
+    return url.searchParams.get("user_name");
+}

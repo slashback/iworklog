@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import WorkLogPage from './page.js'
-
+import { getUserNameFromUrl } from '../utils.js'
 
 class PageContainer extends Component {
     constructor(props) {
@@ -25,7 +25,8 @@ class PageContainer extends Component {
 
     getIssues() {
         this.onChangeLoadingState()
-        fetch("/api/issues")
+        const userName = getUserNameFromUrl()
+        fetch(`/api/issues/${userName}`)
         .then(res => res.json())
         .then(
             (result) => {
